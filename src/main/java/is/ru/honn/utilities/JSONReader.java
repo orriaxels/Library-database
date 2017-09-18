@@ -8,7 +8,9 @@ import org.json.simple.parser.ParseException;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class JSONReader {
     public static void readJson()
@@ -17,28 +19,21 @@ public class JSONReader {
 
         try
         {
-            Object obj = parser.parse(new FileReader("test.json"));
-
-            JSONObject jsonObject = (JSONObject) obj;
-
-            String name = (String) jsonObject.get("title");
-            System.out.println(name);
-
-            long accommodates = (Long) jsonObject.get("accommodates");
-            System.out.println("Accommodates: " + accommodates);
-
-            long bedrooms = (Long) jsonObject.get("bedrooms");
-            System.out.println("Bedrooms: " + bedrooms);
-
-            // loop array
-            JSONArray msg = (JSONArray) jsonObject.get("amenities");
-            System.out.println("Amenities:");
-            Iterator<String> iterator = msg.iterator();
-            while (iterator.hasNext())
+            JSONArray obj = (JSONArray) parser.parse(new FileReader("test.json"));
+            List<JSONObject> all_books = new ArrayList<JSONObject>();
+            for(Object object : obj)
             {
-                System.out.println(iterator.next());
+                JSONObject book = (JSONObject) object;
+                all_books.add(book);
+
             }
 
+            for(JSONObject book1 : all_books)
+            {
+
+                System.out.println(book1.get("bok_id"));
+            }
+            
         }
         catch (FileNotFoundException e)
         {
