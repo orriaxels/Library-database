@@ -2,8 +2,10 @@ package is.ru.honn;
 
 import is.ru.honn.repository.DatabaseConnection;
 import is.ru.honn.utilities.JSONReader;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -15,6 +17,7 @@ public class Main {
     {
         List<JSONObject> allBooks = new ArrayList<JSONObject>();
         List<JSONObject> allFriends = new ArrayList<JSONObject>();
+        List<JSONObject> loans = new ArrayList<JSONObject>();
 
         JSONReader reader = new JSONReader();
 
@@ -23,23 +26,29 @@ public class Main {
 
         allBooks = reader.readJson(fileBooks);
         allFriends = reader.readJson(fileFriends);
-        Integer count = 1;
+
+
         for(JSONObject obj : allFriends)
         {
             if(obj.get("lanasafn") != null)
             {
-                System.out.println(count + " : " + obj.get("lanasafn"));
-                count++;
-            }
+                JSONArray loan = (JSONArray) obj.get("lanasafn");
 
+                for(Object ls : loan)
+                {
+                    JSONObject loanInstance = (JSONObject) ls;
+                    loanInstance.put("pid", obj.get("vinur_id"));
+                    loans.add(loanInstance);
+                }
+            }
         }
 
         DatabaseConnection db = new DatabaseConnection();
 
         db.createNewTable();
-        db.insert("Raw materials", 3000);
-        db.insert("Drasl", 2000);
-        db.insert("bleh", 500);
+        db.insertBooks(allBooks);
+        db.insertFriends(allFriends);
+        db.insertLoans(loans);
 
     }
 }

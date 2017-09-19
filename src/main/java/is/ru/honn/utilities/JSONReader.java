@@ -27,7 +27,6 @@ public class JSONReader
             {
                 JSONObject book = (JSONObject) object;
                 library.add(book);
-
             }
         }
         catch (FileNotFoundException e)
