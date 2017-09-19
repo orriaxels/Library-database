@@ -12,28 +12,23 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-public class JSONReader {
-    public static void readJson()
+public class JSONReader
+{
+    public static List<JSONObject> readJson(String fileName)
     {
         JSONParser parser = new JSONParser();
+        List<JSONObject> library = new ArrayList<JSONObject>();
 
         try
         {
-            JSONArray obj = (JSONArray) parser.parse(new FileReader("test.json"));
-            List<JSONObject> all_books = new ArrayList<JSONObject>();
+            JSONArray obj = (JSONArray) parser.parse(new FileReader(fileName));
+
             for(Object object : obj)
             {
                 JSONObject book = (JSONObject) object;
-                all_books.add(book);
+                library.add(book);
 
             }
-
-            for(JSONObject book1 : all_books)
-            {
-
-                System.out.println(book1.get("bok_id"));
-            }
-            
         }
         catch (FileNotFoundException e)
         {
@@ -48,5 +43,6 @@ public class JSONReader {
             e.printStackTrace();
         }
 
+        return library;
     }
 }
