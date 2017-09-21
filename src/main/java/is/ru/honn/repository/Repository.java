@@ -1,10 +1,12 @@
 package is.ru.honn.repository;
 
 import is.ru.honn.models.Book;
+import is.ru.honn.models.BooksOnLoan;
 import is.ru.honn.models.LoanTransaction;
 import is.ru.honn.models.Person;
 
 import java.sql.*;
+import java.util.ArrayList;
 
 public class Repository
 {
@@ -112,5 +114,76 @@ public class Repository
         {
             System.out.println("Book or Person not found");
         }
+    }
+
+    public ArrayList<BooksOnLoan> getBooksOnLoanByDate(String date)
+    {
+        String sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan == ?";
+        ArrayList<BooksOnLoan> allBooks = new ArrayList<BooksOnLoan>();
+        System.out.println(date);
+        try (Connection conn = this.connect();
+             PreparedStatement pstmtBookId = conn.prepareStatement(sqlDate))
+        {
+            pstmtBookId.setString(1, date);
+            ResultSet rsBooks = pstmtBookId.executeQuery();
+
+            while(rsBooks.next())
+            {
+                Person person = getPersonById(rsBooks.getInt("pid"));
+                Book book = getBookById(rsBooks.getInt("bid"));
+                BooksOnLoan booksOnLoan = new BooksOnLoan(book.getTitle(), person.getFirstName());
+                allBooks.add(booksOnLoan);
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("");
+        }
+
+        return allBooks;
+    }
+
+    public Person getPersonById(int id)
+    {
+        String sqlPerson = "SELECT * FROM persons WHERE id == ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmtPersonId = conn.prepareStatement(sqlPerson))
+        {
+            pstmtPersonId.setInt(1, id);
+            ResultSet rsPerson = pstmtPersonId.executeQuery();
+
+            Person person = new Person(rsPerson.getString("fName"), rsPerson.getString("lName"), rsPerson.getString("email"), rsPerson.getString("phone"), rsPerson.getString("address"));
+
+            return person;
+        }
+        catch (SQLException e)
+        {
+            System.out.println("");
+        }
+
+        return null;
+    }
+
+    public Book getBookById(int id)
+    {
+        String sqlBook = "SELECT * FROM books WHERE id == ?";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmtBookId = conn.prepareStatement(sqlBook))
+        {
+            pstmtBookId.setInt(1, id);
+            ResultSet reBook = pstmtBookId.executeQuery();
+
+            Book book = new Book(reBook.getString("title"), reBook.getString("fName"), reBook.getString("lName"), reBook.getString("published"), reBook.getString("isbn"));
+
+            return book;
+        }
+        catch (SQLException e)
+        {
+            System.out.println("");
+        }
+
+        return null;
     }
 }

@@ -1,6 +1,7 @@
 package is.ru.honn.service;
 
 import is.ru.honn.models.Book;
+import is.ru.honn.models.BooksOnLoan;
 import is.ru.honn.models.LoanTransaction;
 import is.ru.honn.models.Person;
 import is.ru.honn.repository.Repository;
@@ -10,6 +11,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class Service
@@ -36,6 +38,14 @@ public class Service
     {
         LoanTransaction newLoan = new LoanTransaction(pId, bId, date);
         _repo.addLoanTransaction(newLoan);
+    }
+
+    public ArrayList<BooksOnLoan> getAllBooksByDate(String date)
+    {
+        ArrayList<BooksOnLoan> books;
+        books = _repo.getBooksOnLoanByDate(date);
+
+        return books;
     }
 
 }

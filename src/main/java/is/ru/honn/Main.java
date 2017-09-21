@@ -23,12 +23,10 @@ public class Main {
 
         if(System.getProperty("os.name").equals("Mac OS X"))
         {
-            System.out.println(System.getProperty("os.name"));
             f = new File(System.getProperty("user.dir") + "/library.db");
         }
         else
         {
-            System.out.println(System.getProperty("os.name"));
             f = new File(System.getProperty("user.dir") + "\\library.db");
         }
 

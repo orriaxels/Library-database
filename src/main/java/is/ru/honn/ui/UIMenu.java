@@ -1,10 +1,12 @@
 package is.ru.honn.ui;
 
+import is.ru.honn.models.BooksOnLoan;
 import is.ru.honn.service.Service;
 
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -171,6 +173,20 @@ public class UIMenu
 
     private void allBooks()
     {
+        System.out.println("Get books on loan for specific date");
+
+        System.out.print("Date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+
+        ArrayList<BooksOnLoan> books;
+
+        books = _service.getAllBooksByDate(date);
+
+        System.out.println("Title\t\t\t\t\t\t\t\t\t\t\t\t\tPerson name" );
+        for(int i = 0; i < books.size(); i++)
+        {
+            System.out.println(books.get(i).getTitle() + "\t\t\t\t" + books.get(i).getPersonName());
+        }
 
     }
 
