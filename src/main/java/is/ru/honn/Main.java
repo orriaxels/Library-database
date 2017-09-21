@@ -21,7 +21,7 @@ public class Main {
 
         File f = new File(System.getProperty("user.dir") + "\\library.db");
 
-        if(!f.exists())
+        if(!f.exists() && f.isDirectory())
         {
             DatabaseConnection db = new DatabaseConnection();
             db.createNewTable();
