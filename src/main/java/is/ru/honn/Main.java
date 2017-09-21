@@ -1,6 +1,7 @@
 package is.ru.honn;
 
 import is.ru.honn.repository.DatabaseConnection;
+import is.ru.honn.ui.UIMenu;
 import is.ru.honn.utilities.JSONReader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -15,6 +16,8 @@ public class Main {
 
     public static void main(String[] args)
     {
+        UIMenu menu = new UIMenu();
+
         List<JSONObject> allBooks = new ArrayList<JSONObject>();
         List<JSONObject> allFriends = new ArrayList<JSONObject>();
         List<JSONObject> loans = new ArrayList<JSONObject>();
@@ -45,10 +48,11 @@ public class Main {
 
         DatabaseConnection db = new DatabaseConnection();
 
-        db.createNewTable();
-        db.insertBooks(allBooks);
-        db.insertFriends(allFriends);
-        db.insertLoans(loans);
+//        db.createNewTable();
+//        db.insertBooks(allBooks);
+//        db.insertFriends(allFriends);
+//        db.insertLoans(loans);
 
+        menu.run();
     }
 }
