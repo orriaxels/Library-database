@@ -71,7 +71,26 @@ public class Repository
     {
         String sqlBook = "SELECT id FROM books WHERE id == ?";
         String sqlPerson = "SELECT id FROM persons WHERE id == ?";
+        String sqlBookId = "SELECT id FROM loans WHERE id == ?";
         String sqlLoan = "INSERT INTO loans(pid, bid, dateOfLoan) VALUES(?,?,?)";
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmtBookId = conn.prepareStatement(sqlBookId))
+        {
+            pstmtBookId.setInt(1, newLoan.getbId());
+            ResultSet rsBookId = pstmtBookId.executeQuery();
+
+            if(rsBookId.getInt("id") == newLoan.getbId())
+            {
+                System.out.println("Book already on loan");
+                return;
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("");
+        }
+
 
         try (Connection conn = this.connect();
              PreparedStatement pstmtBook   = conn.prepareStatement(sqlBook);

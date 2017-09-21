@@ -23,14 +23,12 @@ public class Service
     public void addNewBook(String title, String firstName, String lastName, String date, String isbn)
     {
         Book newBook = new Book(title, firstName, lastName, date, isbn);
-
         _repo.addBook(newBook);
     }
 
     public void addNewPerson(String firstName, String lastName, String address, String email, String phone)
     {
         Person newPerson = new Person(firstName, lastName, address, email, phone);
-
         _repo.addPerson(newPerson);
     }
 

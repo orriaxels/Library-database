@@ -19,17 +19,32 @@ public class Main {
 
     public static void main(String[] args)
     {
-        Repository _repo = new Repository();
-        Service _service = new Service(_repo);
-        UIMenu menu = new UIMenu(_service);
-        File f = new File(System.getProperty("user.dir") + "\\library.db");
+        File f;
 
-        if(!f.exists() && f.isDirectory())
+        if(System.getProperty("os.name").equals("Mac OS X"))
         {
+            System.out.println(System.getProperty("os.name"));
+            f = new File(System.getProperty("user.dir") + "/library.db");
+        }
+        else
+        {
+            System.out.println(System.getProperty("os.name"));
+            f = new File(System.getProperty("user.dir") + "\\library.db");
+        }
+
+
+        if(!f.exists())
+        {
+            System.out.println("DatabaseCreation");
             DatabaseConnection db = new DatabaseConnection();
             db.createNewTable();
             db.initialFill();
         }
+
+        Repository _repo = new Repository();
+        Service _service = new Service(_repo);
+        UIMenu menu = new UIMenu(_service);
+
 
         menu.run();
     }
