@@ -69,25 +69,29 @@ public class Repository
 
     public void addLoanTransaction(LoanTransaction newLoan)
     {
-        String sql = "SELECT * FROM books WHERE id == ?";
+        String sqlBook = "SELECT id FROM books WHERE id == ?";
+        String sqlPerson = "SELECT id FROM persons WHERE id == ?";
+        String sqlLoan = "INSERT INTO loans(pid, bid, dateOfLoan) VALUES(?,?,?)";
 
-        try (Connection conn = this.connect(); PreparedStatement pstmt  = conn.prepareStatement(sql))
+        try (Connection conn = this.connect();
+             PreparedStatement pstmtBook   = conn.prepareStatement(sqlBook);
+             PreparedStatement pstmtPerson = conn.prepareStatement(sqlPerson);
+             PreparedStatement pstmt = conn.prepareStatement(sqlLoan))
         {
-            pstmt.setInt(1, newLoan.getbId());
+            pstmtBook.setInt(1, newLoan.getbId());
+            pstmtPerson.setInt(1, newLoan.getpId());
 
-            ResultSet rs  = pstmt.executeQuery();
+            ResultSet rsBook   = pstmtBook.executeQuery();
+            ResultSet rsPerson = pstmtPerson.executeQuery();
 
-            System.out.println("");
-            System.out.println(rs.getInt("id") +  "\t" +
-                               rs.getString("title") + "\t" +
-                               rs.getString("fname"));
+            pstmt.setLong(1, (long)rsPerson.getInt("id"));
+            pstmt.setLong(2, (long)rsBook.getInt("id"));
+            pstmt.setString(3, newLoan.getDate());
+            pstmt.executeUpdate();
         }
         catch(SQLException e)
         {
-            System.out.println("Book not found");
+            System.out.println("Book or Person not found");
         }
-
-
-
     }
 }

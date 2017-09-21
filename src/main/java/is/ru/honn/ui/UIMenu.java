@@ -57,6 +57,28 @@ public class UIMenu
             {
                 createNewLoanTransaction();
             }
+            else if(input.toLowerCase().equals("4"))
+            {
+                printLoansMenu();
+                String input = (String) scanner.nextLine();
+
+                if(input.toLowerCase().equals("0"))
+                {
+                    run();
+                }
+                else if(input.toLowerCase().equals("1"))
+                {
+                    allBooks();
+                }
+                if(input.toLowerCase().equals("2"))
+                {
+                    allPersons();
+                }
+                if(input.toLowerCase().equals("3"))
+                {
+                    allPersonMonth();
+                }
+            }
             else
             {
                 System.out.println("Wrong input");
@@ -70,7 +92,17 @@ public class UIMenu
         System.out.println("1: Add new book");
         System.out.println("2: Add new friend");
         System.out.println("3: Create loan transaction");
+        System.out.println("4: All outstanding loans");
         System.out.println("0: exit\n");
+        System.out.println("Choose");
+    }
+
+    public void printLoansMenu(){
+        System.out.println("Outstanding loans \n");
+        System.out.println("1: All books and persons");
+        System.out.println("2: All persons and books");
+        System.out.println("3: All persons that have books for more than a month");
+        System.out.println("0: Back\n");
         System.out.println("Choose");
     }
 
@@ -131,12 +163,24 @@ public class UIMenu
 
         scanner.nextLine();
 
-        System.out.print("Date: " + sdf.format(date));
+        System.out.print("Date: " + sdf.format(date) + "\n");
 
         String newDate = (String)sdf.format(date);
         _service.addNewLoanTransaction(pId, bId, newDate);
+    }
 
+    private void allBooks()
+    {
 
     }
 
+    private void allPersons()
+    {
+
+    }
+
+    private void allPersonMonth()
+    {
+
+    }
 }
