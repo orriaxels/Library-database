@@ -1,7 +1,5 @@
 package is.ru.honn.ui;
 
-import com.sun.tools.doclets.formats.html.SourceToHTMLConverter;
-
 import java.io.IOException;
 import java.util.InputMismatchException;
 import java.util.Scanner;

@@ -1,12 +1,21 @@
 package is.ru.honn.repository;
 
+import is.ru.honn.utilities.JSONReader;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
 import java.math.BigDecimal;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseConnection {
+
+    List<JSONObject> allBooks = new ArrayList<JSONObject>();
+    List<JSONObject> allFriends = new ArrayList<JSONObject>();
+    List<JSONObject> loans = new ArrayList<JSONObject>();
+
+    JSONReader reader = new JSONReader();
 
     private Connection connect()
     {
@@ -22,11 +31,11 @@ public class DatabaseConnection {
     }
 
     public void createNewTable() {
-        // db parameters
 
         // SQL statement for creating a new table
+        System.out.println("Creating tables...");
         String booksTable = "CREATE TABLE IF NOT EXISTS books (\n"
-                + " id long PRIMARY KEY, \n"
+                + " id INTEGER PRIMARY KEY, \n"
                 + " title text NOT NULL, \n"
                 + " fname text NOT NULL, \n"
                 + " lname text NOT NULL, \n"
@@ -35,7 +44,7 @@ public class DatabaseConnection {
                 + ");";
 
         String personTable = "CREATE TABLE IF NOT EXISTS persons (\n"
-                + " id long PRIMARY KEY, \n"
+                + " id INTEGER PRIMARY KEY, \n"
                 + " fname text NOT NULL, \n"
                 + " lname text NOT NULL, \n"
                 + " email text, \n"
@@ -43,8 +52,8 @@ public class DatabaseConnection {
                 + " address text \n"
                 + ");";
 
-        String outloansTable = "CREATE TABLE IF NOT EXISTS outloans(\n"
-                + " id long PRIMARY KEY, \n"
+        String outloansTable = "CREATE TABLE IF NOT EXISTS loans(\n"
+                + " id INTEGER PRIMARY KEY, \n"
                 + " pid long, \n"
                 + " bid long, \n"
                 + " dateOfLoan text NOT NULL, \n"
@@ -56,14 +65,38 @@ public class DatabaseConnection {
             stmt.execute(booksTable);
             stmt.execute(personTable);
             stmt.execute(outloansTable);
+            System.out.println("Done creating tables");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    public void insertBooks(List<JSONObject> books)
+    public void initialFill()
     {
-        for(JSONObject book : books)
+        String fileBooks = System.getProperty("user.dir") + "/jsonData/SC-T-302-HONN 2017- Bækur.json";
+        String fileFriends = System.getProperty("user.dir") + "/jsonData/SC-T-HONN-302 2017- Vinir.json";
+
+        allBooks = reader.readJson(fileBooks);
+        allFriends = reader.readJson(fileFriends);
+
+        for(JSONObject obj : allFriends)
+        {
+            if(obj.get("lanasafn") != null)
+            {
+                JSONArray loan = (JSONArray) obj.get("lanasafn");
+
+                for(Object ls : loan)
+                {
+                    JSONObject loanInstance = (JSONObject) ls;
+                    loanInstance.put("pid", obj.get("vinur_id"));
+                    loans.add(loanInstance);
+                }
+            }
+        }
+
+        // Fill books table
+        System.out.println("Inserting into book table...");
+        for(JSONObject book : allBooks)
         {
             String sql = "INSERT INTO books(id, title, fname, lname, published, isbn) VALUES(?,?,?,?,?,?)";
 
@@ -80,11 +113,11 @@ public class DatabaseConnection {
                 System.out.println(e.getMessage());
             }
         }
-    }
+        System.out.println("Finished inserting into book table");
 
-    public void insertFriends(List<JSONObject> friends)
-    {
-        for(JSONObject friend : friends)
+        System.out.println("Inserting into persons table...");
+        // Fill person table
+        for(JSONObject friend : allFriends)
         {
             String sql = "INSERT INTO persons(id, fname, lname, email, address) VALUES(?,?,?,?,?)";
 
@@ -100,27 +133,25 @@ public class DatabaseConnection {
                 System.out.println(e.getMessage());
             }
         }
-    }
+        System.out.println("Finished inserting into persons table");
 
-    public void insertLoans(List<JSONObject> loans)
-    {
-        long counter = 1;
+
+        System.out.println("Inserting into loans table...");
+        // Fill outloans table
         for(JSONObject loan : loans)
         {
-            String sql = "INSERT INTO outloans(id, pid, bid, dateOfLoan) VALUES(?, ?,?,?)";
+            String sql = "INSERT INTO loans(pid, bid, dateOfLoan) VALUES(?,?,?)";
 
             try(Connection conn = this.connect();
                 PreparedStatement pstmt = conn.prepareStatement(sql)) {
-                pstmt.setLong(1,  counter);
-                pstmt.setLong(2,   (Long)loan.get("pid"));
-                pstmt.setLong(3, (Long)loan.get("bok_id"));
-                pstmt.setString(4, (String)loan.get("bok_lanadagsetning"));
+                pstmt.setLong(1,   (long)loan.get("pid"));
+                pstmt.setLong(2, (long)loan.get("bok_id"));
+                pstmt.setString(3, (String)loan.get("bok_lanadagsetning"));
                 pstmt.executeUpdate();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
-
-            counter++;
         }
+        System.out.println("Finished inserting into loans table");
     }
 }
