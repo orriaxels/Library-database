@@ -1,9 +1,6 @@
 package is.ru.honn.service;
 
-import is.ru.honn.models.Book;
-import is.ru.honn.models.BooksOnLoan;
-import is.ru.honn.models.LoanTransaction;
-import is.ru.honn.models.Person;
+import is.ru.honn.models.*;
 import is.ru.honn.repository.Repository;
 import org.json.simple.JSONObject;
 
@@ -46,6 +43,13 @@ public class Service
         books = _repo.getBooksOnLoanByDate(date);
 
         return books;
+    }
+
+    public ArrayList<PersonBooksLoan> getPersonAndBooksOnLoan(String date)
+    {
+        ArrayList<PersonBooksLoan> persons;
+        persons =  _repo.getPersonAndBooksOnLoan(date);
+        return persons;
     }
 
 }

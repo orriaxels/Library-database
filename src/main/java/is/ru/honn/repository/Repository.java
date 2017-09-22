@@ -1,9 +1,6 @@
 package is.ru.honn.repository;
 
-import is.ru.honn.models.Book;
-import is.ru.honn.models.BooksOnLoan;
-import is.ru.honn.models.LoanTransaction;
-import is.ru.honn.models.Person;
+import is.ru.honn.models.*;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -119,8 +116,9 @@ public class Repository
     public ArrayList<BooksOnLoan> getBooksOnLoanByDate(String date)
     {
         String sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan == ?";
+
         ArrayList<BooksOnLoan> allBooks = new ArrayList<BooksOnLoan>();
-        System.out.println(date);
+
         try (Connection conn = this.connect();
              PreparedStatement pstmtBookId = conn.prepareStatement(sqlDate))
         {
@@ -137,10 +135,57 @@ public class Repository
         }
         catch (SQLException e)
         {
-            System.out.println("");
+            System.out.println("No transaction on this date");
         }
 
         return allBooks;
+    }
+
+    public ArrayList<PersonBooksLoan> getPersonAndBooksOnLoan(String date)
+    {
+        String sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan == ?";
+        ArrayList<PersonBooksLoan> persons = new ArrayList<PersonBooksLoan>();
+        boolean alreadyExists = false;
+
+        try (Connection conn = this.connect();
+             PreparedStatement pstmtDate = conn.prepareStatement(sqlDate))
+        {
+            pstmtDate.setString(1, date);
+            ResultSet rsBooks = pstmtDate.executeQuery();
+
+            while(rsBooks.next())
+            {
+                Person person = getPersonById(rsBooks.getInt("pid"));
+                Book book = getBookById(rsBooks.getInt("bid"));
+
+                for(int i = 0; i < persons.size(); i++)
+                {
+                    if(persons.get(i).getPid() == rsBooks.getInt("pid"))
+                    {
+                        persons.get(i).getBooks().add(book);
+                        alreadyExists = true;
+                    }
+                }
+
+                if(!alreadyExists)
+                {
+                    PersonBooksLoan personAndBooks = new PersonBooksLoan();
+                    personAndBooks.setPerson(person);
+                    personAndBooks.setPid(rsBooks.getInt("pid"));
+                    personAndBooks.setBooks(book);
+
+                    persons.add(personAndBooks);
+
+                }
+                alreadyExists = false;
+            }
+        }
+        catch (SQLException e)
+        {
+            System.out.println("No transaction on this date");
+        }
+
+        return  persons;
     }
 
     public Person getPersonById(int id)

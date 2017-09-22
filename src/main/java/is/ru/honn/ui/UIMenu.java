@@ -1,9 +1,11 @@
 package is.ru.honn.ui;
 
 import is.ru.honn.models.BooksOnLoan;
+import is.ru.honn.models.PersonBooksLoan;
 import is.ru.honn.service.Service;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -192,7 +194,26 @@ public class UIMenu
 
     private void allPersons()
     {
+        ArrayList<PersonBooksLoan> persons;
 
+        System.out.println("Get persons and their books on loan for specific date");
+        System.out.print("Date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+
+        persons  = _service.getPersonAndBooksOnLoan(date);
+
+        System.out.println("");
+        for(int i = 0; i < persons.size();i++)
+        {
+            System.out.println(persons.get(i).getPerson().getFirstName() + " " + persons.get(i).getPerson().getLastName());
+            for(int j = 0; j < persons.get(i).getBooks().size(); j++)
+            {
+                System.out.println("\t- " + persons.get(i).getBooks().get(j).getTitle());
+            }
+            System.out.println("");
+        }
+
+        System.out.println("");
     }
 
     private void allPersonMonth()
