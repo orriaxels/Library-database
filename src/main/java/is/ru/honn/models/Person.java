@@ -1,5 +1,14 @@
 package is.ru.honn.models;
 
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version Person.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ * The Person Class is a simple class that holds the information about one
+ * person object in the database
+ */
+
 public class Person
 {
     private String firstName;
@@ -21,39 +30,19 @@ public class Person
         return firstName;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
     public String getLastName() {
         return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
     }
 
     public String getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getEmail() {
         return email;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getPhone() {
         return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
     }
 }

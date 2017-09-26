@@ -1,19 +1,31 @@
 package is.ru.honn.repository;
 
 import is.ru.honn.models.*;
-
 import java.sql.*;
 import java.util.ArrayList;
+
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version Repository.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ * The Repository starts by connecting to the database, it then takes care of
+ * all communication with the database
+ */
 
 public class Repository
 {
     Connection conn;
 
+    // Repository constructor
     public Repository()
     {
         conn = connect();
     }
 
+    /// <summary>
+    /// This method connects to the database
+    /// </summary>
     private Connection connect()
     {
         String url = "jdbc:sqlite:library.db";
@@ -27,7 +39,10 @@ public class Repository
         return conn;
     }
 
-
+    /// <summary>
+    /// This method adds a new book to the library database
+    /// </summary>
+    /// <param name="newBook">This method takes in a Book object containing book data</param>
     public void addBook(Book newBook)
     {
         String sql = "INSERT INTO books(title, fname, lname, published, isbn) VALUES(?,?,?,?,?)";
@@ -47,6 +62,10 @@ public class Repository
         }
     }
 
+    /// <summary>
+    /// This method adds a new person to the library database
+    /// </summary>
+    /// <param name="newPerson">This method takes in a person object containing person data</param>
     public void addPerson(Person newPerson)
     {
         String sql = "INSERT INTO persons(fname, lname, address, email, phone) VALUES(?,?,?,?,?)";
@@ -66,11 +85,15 @@ public class Repository
         }
     }
 
+    /// <summary>
+    /// This method adds a new loan transaction to the library database
+    /// </summary>
+    /// <param name="newLoan">This method takes in a LoanTransaction object containing loan transaction data</param>
     public void addLoanTransaction(LoanTransaction newLoan)
     {
         String sqlBook = "SELECT id FROM books WHERE id == ?";
         String sqlPerson = "SELECT id FROM persons WHERE id == ?";
-        String sqlBookId = "SELECT id FROM loans WHERE id == ?";
+        String sqlBookId = "SELECT bid FROM loans WHERE bid == ?";
         String sqlLoan = "INSERT INTO loans(pid, bid, dateOfLoan) VALUES(?,?,?)";
 
         try (Connection conn = this.connect();
@@ -79,7 +102,7 @@ public class Repository
             pstmtBookId.setInt(1, newLoan.getbId());
             ResultSet rsBookId = pstmtBookId.executeQuery();
 
-            if(rsBookId.getInt("id") == newLoan.getbId())
+            if(rsBookId.getInt("bid") == newLoan.getbId())
             {
                 System.out.println("Book already on loan");
                 return;
@@ -113,6 +136,11 @@ public class Repository
         }
     }
 
+    /// <summary>
+    /// This method gets a list of all books on loan for given date
+    /// </summary>
+    /// <param name="date">This method takes a string containing the date to search by</param>
+    /// <returns>A list of all books on loan for a given date</return>
     public ArrayList<BooksOnLoan> getBooksOnLoanByDate(String date)
     {
         String sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan == ?";
@@ -141,9 +169,27 @@ public class Repository
         return allBooks;
     }
 
-    public ArrayList<PersonBooksLoan> getPersonAndBooksOnLoan(String date)
+    /// <summary>
+    /// This method does two things
+    /// If int Action = 1 it gets all persons and the books they have on loan for the given date
+    /// If int Action != 1 it gets all persons and book they have on loan older then a month from given date
+    /// </summary>
+    /// <param name="date">This method takes a string containing the date to search by</param>
+    /// <param name="action">This method takes a string saying what action it's gonna make</param>
+    /// <returns>A list of PersonBookLoan object that contains a Person and the books that person has on loans</return>
+    public ArrayList<PersonBooksLoan> getPersonAndBooksOnLoan(String date, int action)
     {
-        String sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan == ?";
+        String sqlDate;
+
+        if(action == 1)
+        {
+            sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan == ?";
+        }
+        else
+        {
+            sqlDate = "SELECT pid, bid FROM loans WHERE dateOfLoan <= ?";
+        }
+
         ArrayList<PersonBooksLoan> persons = new ArrayList<PersonBooksLoan>();
         boolean alreadyExists = false;
 
@@ -188,6 +234,11 @@ public class Repository
         return  persons;
     }
 
+    /// <summary>
+    /// This method returns a person object by Id
+    /// </summary>
+    /// <param name="id">This method takes an Id of the person to search for</param>
+    /// <returns>A Person object containing the person detail</return>
     public Person getPersonById(int id)
     {
         String sqlPerson = "SELECT * FROM persons WHERE id == ?";
@@ -210,6 +261,11 @@ public class Repository
         return null;
     }
 
+    /// <summary>
+    /// This method returns a book object by Id
+    /// </summary>
+    /// <param name="id">This method takes an Id of the book to search for</param>
+    /// <returns>A Book object containing the person detail</return>
     public Book getBookById(int id)
     {
         String sqlBook = "SELECT * FROM books WHERE id == ?";

@@ -1,17 +1,28 @@
 package is.ru.honn.ui;
 
 import is.ru.honn.models.BooksOnLoan;
+import is.ru.honn.models.Person;
 import is.ru.honn.models.PersonBooksLoan;
 import is.ru.honn.service.Service;
+import org.joda.time.DateTime;
+import org.joda.time.LocalDate;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.InputMismatchException;
-import java.util.Scanner;
+import java.util.*;
+
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version UIMenu.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ * The UIMenu class constructor takes in an instance of the service class, the UI will take input
+ * information from the user and the send it to the server
+ */
 
 public class UIMenu
 {
@@ -22,6 +33,7 @@ public class UIMenu
     private DateFormat sdf;
     private Date date;
 
+    // UIMenu constructor
     public UIMenu(Service service) {
         this._service = service;
         sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -31,16 +43,6 @@ public class UIMenu
     public void run() {
         while(running)
         {
-            System.out.print("\033[H\033[2J");
-            try
-            {
-                Runtime.getRuntime().exec("clear");
-            }
-            catch(final Exception e)
-            {
-
-            }
-
             printMenu();
 
             input = (String) scanner.nextLine();
@@ -202,7 +204,27 @@ public class UIMenu
 
         persons  = _service.getPersonAndBooksOnLoan(date);
 
-        System.out.println("");
+        printPersonAndBooks(persons, "\nBooks on loan for given date: " + date);
+    }
+
+    private void allPersonMonth()
+    {
+        ArrayList<PersonBooksLoan> persons;
+
+        System.out.println("Get all month old loans");
+        System.out.print("Date (YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+
+        persons = _service.getMonthOldLoans(date);
+
+        printPersonAndBooks(persons, "\nBooks on loan for 30 days or more");
+
+    }
+
+    private void printPersonAndBooks(ArrayList<PersonBooksLoan> persons, String message)
+    {
+        System.out.println(message);
+        System.out.println("------------------------------------------");
         for(int i = 0; i < persons.size();i++)
         {
             System.out.println(persons.get(i).getPerson().getFirstName() + " " + persons.get(i).getPerson().getLastName());
@@ -214,10 +236,5 @@ public class UIMenu
         }
 
         System.out.println("");
-    }
-
-    private void allPersonMonth()
-    {
-
     }
 }

@@ -1,5 +1,14 @@
 package is.ru.honn.models;
 
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version Book.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ * The Person Class is a simple class that holds the information about one
+ * Book object in the database
+ */
+
 public class Book
 {
     private String title;
@@ -21,39 +30,19 @@ public class Book
         return title;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
     public String getFirstName() {
         return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getPublised() {
         return publised;
     }
 
-    public void setPublised(String publised) {
-        this.publised = publised;
-    }
-
     public String getIsbn() {
         return isbn;
-    }
-
-    public void setIsbn(String isbn) {
-        this.isbn = isbn;
     }
 }

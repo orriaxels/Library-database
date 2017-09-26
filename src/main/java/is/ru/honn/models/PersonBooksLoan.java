@@ -2,6 +2,16 @@ package is.ru.honn.models;
 
 import java.util.ArrayList;
 
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version PersonBookLoan.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ * The PersonBooksLoan class holds an one instance of the Person object and an
+ * array of Book objects, we use this to tell us all the books a single person
+ * has on loan for given date
+ */
+
 public class PersonBooksLoan
 {
     private int pid;

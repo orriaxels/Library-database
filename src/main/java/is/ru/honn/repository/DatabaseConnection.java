@@ -3,11 +3,20 @@ package is.ru.honn.repository;
 import is.ru.honn.utilities.JSONReader;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-
-import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version DatabaseConnection.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ *  The DatabaseConnection class will create a new database only if it does not exist before
+ *  it will create the necessary tables. It will read from the .json files with the data and put the
+ *  data in the right tables, this class will not be created again when the system runs, unless the database
+ *  will be deleted
+ */
 
 public class DatabaseConnection {
 
@@ -17,6 +26,7 @@ public class DatabaseConnection {
 
     JSONReader reader = new JSONReader();
 
+    // Connects to the database
     private Connection connect()
     {
         String url = "jdbc:sqlite:library.db";
@@ -30,6 +40,7 @@ public class DatabaseConnection {
         return conn;
     }
 
+    // Creates database tables
     public void createNewTable() {
 
         // SQL statement for creating a new table
@@ -56,7 +67,7 @@ public class DatabaseConnection {
                 + " id INTEGER PRIMARY KEY, \n"
                 + " pid long, \n"
                 + " bid long, \n"
-                + " dateOfLoan text NOT NULL, \n"
+                + " dateOfLoan date NOT NULL, \n"
                 + " rating long \n"
                 + ");";
 
@@ -71,6 +82,7 @@ public class DatabaseConnection {
         }
     }
 
+    // Fills the database tables
     public void initialFill()
     {
         String fileBooks = System.getProperty("user.dir") + "/jsonData/SC-T-302-HONN 2017- Bækur.json";
@@ -116,6 +128,7 @@ public class DatabaseConnection {
         System.out.println("Finished inserting into book table");
 
         System.out.println("Inserting into persons table...");
+
         // Fill person table
         for(JSONObject friend : allFriends)
         {
@@ -137,7 +150,8 @@ public class DatabaseConnection {
 
 
         System.out.println("Inserting into loans table...");
-        // Fill outloans table
+
+        // Fill loans table
         for(JSONObject loan : loans)
         {
             String sql = "INSERT INTO loans(pid, bid, dateOfLoan) VALUES(?,?,?)";

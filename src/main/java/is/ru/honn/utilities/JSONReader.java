@@ -12,6 +12,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+/**
+ * @author Haraldur Ingi Shoshan og Orri Axelsson
+ * @version JSONReader.java 1.0 26 September 2017
+ * Copyright (c) Haraldur Ingi Shoshan & Orri Axelsson
+ *
+ * The class JSONReader creates an instance of JSONParse, it will open a json
+ * file and read from it, it will store information in an array that it then returns
+ */
+
 public class JSONReader
 {
     public static List<JSONObject> readJson(String fileName)
